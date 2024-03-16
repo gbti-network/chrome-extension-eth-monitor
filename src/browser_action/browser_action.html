@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+<head>
+  <link href="https://fonts.googleapis.com/css?family=Ubuntu:regular,bold" rel="stylesheet">
+  <link rel="stylesheet" href="browser_action.css">
+  <script type="text/javascript" src="../../js/jquery-3.1.1.slim.min.js"></script>
+</head>
+<body>
+<div class="container">
+  <h1 class="title">ETH price</h1>
+  <h4 class="subtitle">(@ Kraken)</h4>
+  <div class="price-container">
+    <div class="row">
+      <div class="price-title-container">
+        <h2>
+          <span class="price">-</span>
+        </h2>
+      </div>
+      <div class="price-icons-container">
+        <img class="icon-up" src="../../icons/up.png" width="17" height="17" />
+        <img class="icon-down" src="../../icons/down.png" width="17" height="17" />
+      </div>
+    </div>
+    <h3>
+      <span class="percentage">-%</span>
+    </h3>
+  </div>
+
+  <div class="extra-info">
+    <p class="extra-info extra-info-left">
+      Opening: <span class="opening">-</span>
+    </p>
+    <p class="extra-info extra-info-center">
+      High: <span class="high">-</span>
+    </p>
+    <p class="extra-info extra-info-right">
+      Low: <span class="low">-</span>
+    </p>
+  </div>
+  <div class="settings-container">
+    <h1>Additional Settings</h1>
+    <form id="settings-form">
+      <label for="high-notification">High Notification Threshold (ETH):</label>
+      <input type="number" id="high-notification" min="0" step="any" placeholder="Enter high threshold">
+
+      <label for="low-notification">Low Notification Threshold (ETH):</label>
+      <input type="number" id="low-notification" min="0" step="any" placeholder="Enter low threshold">
+
+      <button type="button" id="save-button">Save Settings</button>
+    </form>
+  </div>
+</div>
+<script type="text/javascript" src="browser_action.js"></script>
+</body>
+</html>
