@@ -3,8 +3,6 @@
 
 ![image](https://github.com/gbti-labs/chrome-extension-eth-monitor/assets/125175036/61e30349-703d-4e8d-b2e3-1a34f41e61da)
 
-![ETH Monitor Logo](icons/icon@128.png)
-
 ETH Monitor is a Chrome extension that displays the current Ethereum (ETH) price on the badge icon. Additionally, it offers more detailed market information in the popup window view. The extension utilizes the Kraken API for fetching Ethereum prices. This extension also will listen for new highs/lows as set by the user and perform push notifications when those price targets are met. 
 
 This project is based on [ETH Ticker](https://github.com/raulmarcosl/eth-ticker) by [raulmarcosl](https://github.com/raulmarcosl), with modifications and enhancements made by GBTI Labs.
