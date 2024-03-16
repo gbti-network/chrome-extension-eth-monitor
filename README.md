@@ -1,7 +1,7 @@
-![image](https://github.com/gbti-labs/chrome-extension-eth-monitor/assets/125175036/61e30349-703d-4e8d-b2e3-1a34f41e61da)
-
 
 # Chrome Extension - ETH Monitor
+
+![image](https://github.com/gbti-labs/chrome-extension-eth-monitor/assets/125175036/61e30349-703d-4e8d-b2e3-1a34f41e61da)
 
 ![ETH Monitor Logo](icons/icon@128.png)
 
