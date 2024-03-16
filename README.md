@@ -6,6 +6,8 @@ ETH Monitor is a Chrome extension that displays the current Ethereum (ETH) price
 
 This project is based on [ETH Ticker](https://github.com/raulmarcosl/eth-ticker) by [raulmarcosl](https://github.com/raulmarcosl), with modifications and enhancements made by GBTI Labs.
 
+![image](https://github.com/gbti-labs/chrome-extension-eth-monitor/assets/125175036/dc562b65-63c1-4e6d-9d6f-ee4dbdc23256)
+
 ## Table of Contents
 
 - [Features](#features)
