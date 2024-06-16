@@ -7,102 +7,121 @@ const defaultVals = {
 };
 
 let config = {};
-let alertCounter = 0; // Initialize alert counter
-let lastAlertTime = 0; // Initialize last alert timestamp
-
+let alertCounter = 0;
+let lastAlertTime = 0;
+let lastApiCallTime = 0;
 
 const fetchCryptoPrices = async () => {
+  const currencies = ['ETH', 'BTC', 'DOGE', 'SOL'];
+  console.log("Starting to fetch crypto prices at", new Date().toISOString());
+  for (let i = 0; i < currencies.length; i++) {
+    const currency = currencies[i];
+    await new Promise(resolve => setTimeout(resolve, Math.max(1000 - (Date.now() - lastApiCallTime), 0)));
+    console.log(`Fetching price for ${currency} at ${new Date().toISOString()}`);
+    fetchPriceForCurrency(currency).then(result => {
+      console.log(`Price for ${currency}: `, result);
+      if (result.error) {
+        console.error(`Error fetching prices for ${currency}:`, result.error);
+      } else {
+        checkThresholdsAndNotify(result.price, currency);
+      }
+      lastApiCallTime = Date.now();
+    });
+  }
+};
+
+const currencyPairs = {
+  'ETH': 'XETHZUSD',
+  'BTC': 'XXBTZUSD',
+  'DOGE': 'XDGUSD',
+  'SOL': 'SOLUSD',
+};
+
+const fetchPriceForCurrency = async (currency) => {
   try {
-    const url = `https://api.kraken.com/0/public/Ticker?pair=ETH${config.currency}`;
+    const pair = currencyPairs[currency] || `X${currency}ZUSD`;
+    console.log(`Attempting to fetch data for pair: ${pair}`);
+    const url = `https://api.kraken.com/0/public/Ticker?pair=${pair}`;
     const response = await fetch(url);
     const data = await response.json();
-    const res = data.result[`XETHZ${config.currency}`];
 
-    checkThresholdsAndNotify(parseFloat(res.c[0]));
+    console.log(`Response from Kraken for ${pair}:`, data);
 
-    console.log('Fetched price:', parseFloat(res.c[0]));
-    updateBadge(parseFloat(res.c[0]), parseFloat(res.o));
+    // Check if the HTTP response status code is not 200 OK
+    if (response.status !== 200) {
+      console.error(`Non-200 status code received: ${response.status}`);
+      // Handle non-200 responses accordingly
+    }
 
+    // Log the pair and check if the result object contains the pair
+    console.log(`Checking if data.result contains the pair: `, data.result.hasOwnProperty(pair));
+
+    if (!data.result || !data.result[pair]) {
+      throw new Error(`No data for pair: ${pair}`);
+    }
+
+    const res = data.result[pair];
+    return { price: parseFloat(res.c[0]), opening: parseFloat(res.o) };
   } catch (error) {
-    console.error('Error fetching crypto prices:', error);
+    console.error(`Error fetching prices for ${currency}:`, error);
+    return { error };
   }
 };
 
 
-const updateBadge = (price, opening) => {
-  console.log('Updating badge with price:', price); // Debugging: Log the price being set
-  const color = price > opening ? config.green_badge_color : config.red_badge_color;
-  chrome.action.setBadgeBackgroundColor({ color });
-
-  // Convert the price to a string with toFixed to control the number of decimals
-  let text = price.toFixed(2);
-
-  // Remove the decimal point without using replace(), assuming we always have two decimal places
-  text = text.substring(0, text.length - 3) + text.substring(text.length - 2);
-
-  text = text.length > 4 ? text.substring(0, 4) : text; // Ensure text is not longer than 4 characters
-  console.log('Badge text set to:', text); // Debugging: Log the text being set
-
-  chrome.action.setBadgeText({ text });
+const updateBadge = () => {
+  chrome.action.setBadgeBackgroundColor({ color: '#FF0000' });
+  chrome.action.setBadgeText({ text: alertCounter.toString() });
 };
-
-
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message === "resetAlertCounter") {
-    alertCounter = 0; // Reset the alert counter
-    console.log('Alert counter reset.');
-  }
-});
 
 chrome.runtime.onInstalled.addListener(() => {
   chrome.storage.local.set({ config: defaultVals }, () => {
     config = { ...defaultVals };
     fetchCryptoPrices();
-    chrome.alarms.create({ periodInMinutes: config.refresh_time / 60000 });
+    chrome.alarms.create('refresh', { periodInMinutes: config.refresh_time / 60000 });
   });
 });
 
-chrome.alarms.onAlarm.addListener(fetchCryptoPrices);
-
+chrome.alarms.onAlarm.addListener((alarm) => {
+  if (alarm.name === 'refresh') {
+    fetchCryptoPrices();
+  }
+});
 
 const notifyUser = (title, message) => {
   const currentTime = new Date().getTime();
   const timeSinceLastAlert = currentTime - lastAlertTime;
-
-  // If more than 3 alerts have been sent and it's been less than 30 minutes since the last alert, don't send a new alert.
   if (alertCounter > 3 && timeSinceLastAlert < 1800000) {
     console.log('Alert skipped to avoid flooding. Waiting for the 30-minute interval.');
     return;
   }
-
-  console.log('Attempting to send notification:', title, message);
   chrome.notifications.create({
     title: title,
-    iconUrl: chrome.runtime.getURL("icons/icon@48.png"),
     message: message,
+    iconUrl: chrome.runtime.getURL("icons/icon@48.png"),
     type: "basic",
     silent: false
   }, function(notificationId) {
-    console.log(`Notification pushed ${notificationId}`);
-    alertCounter++; // Increment the alert counter
-    lastAlertTime = currentTime; // Update the last alert timestamp
+    alertCounter++;
+    lastAlertTime = currentTime;
+    updateBadge();  // Update badge whenever a new alert is fired
   });
 };
 
-
-const checkThresholdsAndNotify = (currentPrice) => {
-  console.log('Checking thresholds for notifications...', currentPrice);
-  chrome.storage.local.get(['high_notification', 'low_notification'], function(result) {
-    console.log('Thresholds - High:', result.high_notification, 'Low:', result.low_notification);
-    const highThreshold = parseFloat(result.high_notification);
-    const lowThreshold = parseFloat(result.low_notification);
-
-    if (currentPrice >= highThreshold) {
-      console.log('Current price is above the high threshold.');
-      notifyUser('ETH Price Alert', `Price is above your high threshold! Current price: ${currentPrice}`);
-    } else if (currentPrice <= lowThreshold) {
-      console.log('Current price is below the low threshold.');
-      notifyUser('ETH Price Alert', `Price is below your low threshold! Current price: ${currentPrice}`);
+const checkThresholdsAndNotify = (currentPrice, currency) => {
+  chrome.storage.local.get([`${currency.toLowerCase()}_high_notification`, `${currency.toLowerCase()}_low_notification`], function(result) {
+    const highThreshold = parseFloat(result[`${currency.toLowerCase()}_high_notification`]);
+    const lowThreshold = parseFloat(result[`${currency.toLowerCase()}_low_notification`]);
+    if (currentPrice >= highThreshold || currentPrice <= lowThreshold) {
+      const direction = currentPrice >= highThreshold ? 'above' : 'below';
+      notifyUser(`${currency} Price Alert`, `Price is ${direction} your threshold! Current price: ${currentPrice}`);
     }
   });
 };
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message === "resetAlertCounter") {
+    alertCounter = 0; // Reset the alert counter
+    chrome.action.setBadgeText({ text: '' }); // Clear badge text
+  }
+});

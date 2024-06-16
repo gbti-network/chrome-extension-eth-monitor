@@ -1,63 +1,93 @@
-// Global scope configuration object
+// Configuration object for currency settings and colors
 const config = {
-  'currency': 'USD',
-  'symbol': '$',
-  'symbol_prefix': true,
-  'green_badge_color': '#7ED321',
-  'red_badge_color': '#A9A9A9',
+  'ETH': {
+    'currency': 'USD',
+    'symbol': '$',
+    'symbol_prefix': true,
+    'green_badge_color': '#7ED321',
+    'red_badge_color': '#A9A9A9',
+    'pair': 'XETHZUSD'
+  },
+  'BTC': {
+    'currency': 'USD',
+    'symbol': '$',
+    'symbol_prefix': true,
+    'green_badge_color': '#7ED321',
+    'red_badge_color': '#A9A9A9',
+    'pair': 'XXBTZUSD'
+  },
+  'DOGE': {
+    'currency': 'USD',
+    'symbol': '$',
+    'symbol_prefix': true,
+    'green_badge_color': '#7ED321',
+    'red_badge_color': '#A9A9A9',
+    'pair': 'XDGUSD'
+  },
+  'SOL': {
+    'currency': 'USD',
+    'symbol': '$',
+    'symbol_prefix': true,
+    'green_badge_color': '#7ED321',
+    'red_badge_color': '#A9A9A9',
+    'pair': 'SOLUSD'
+  }
 };
 
-// The requestData function is accessible in the global scope.
 const requestData = () => {
-  const url = `https://api.kraken.com/0/public/Ticker?pair=ETH${config.currency}`;
-  fetch(url)
-      .then((response) => response.json())
-      .then((data) => {
-        const result = data.result[`XETHZ${config.currency}`];
-        updateUIElements({
-          price: parseFloat(result.c[0]),
-          opening: parseFloat(result.o),
-          high: parseFloat(result.h[1]),
-          low: parseFloat(result.l[1])
+  let lastCallTime = 0;
+  Object.keys(config).forEach(async (currency, index) => {
+    await new Promise(resolve => setTimeout(resolve, Math.max(1000 * index - (Date.now() - lastCallTime), 0)));
+    const pair = config[currency].pair;
+    const url = `https://api.kraken.com/0/public/Ticker?pair=${pair}`;
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          const result = data.result[pair];
+          updateUIElements({
+            price: parseFloat(result.c[0]),
+            opening: parseFloat(result.o),
+            high: parseFloat(result.h[1]),
+            low: parseFloat(result.l[1])
+          }, currency);
+          lastCallTime = Date.now();
+        })
+        .catch(error => {
+          console.error(`Error fetching crypto prices for ${currency}:`, error);
         });
-      })
-      .catch((error) => {
-        console.error('Error fetching crypto prices:', error);
-      });
+  });
 };
+
+
 
 // Function to update the UI elements with the fetched data
-const updateUIElements = (priceData) => {
-  const priceElement = document.querySelector('.price');
-  const openingElement = document.querySelector('.opening');
-  const highElement = document.querySelector('.high');
-  const lowElement = document.querySelector('.low');
-  const percentageElement = document.querySelector('.percentage');
-  const iconUpElement = document.querySelector('.icon-up');
-  const iconDownElement = document.querySelector('.icon-down');
+const updateUIElements = (priceData, currency) => {
+  const container = document.querySelector(`.container.${currency.toLowerCase()}`);
+  const priceElement = container.querySelector('.price');
+  const openingElement = container.querySelector('.opening');
+  const highElement = container.querySelector('.high');
+  const lowElement = container.querySelector('.low');
+  const percentageElement = container.querySelector('.percentage');
+  const iconUpElement = container.querySelector('.icon-up');
+  const iconDownElement = container.querySelector('.icon-down');
 
-  priceElement.textContent = formatPrice(priceData.price);
-  openingElement.textContent = formatPrice(priceData.opening);
-  highElement.textContent = formatPrice(priceData.high);
-  lowElement.textContent = formatPrice(priceData.low);
+  priceElement.textContent = formatPrice(priceData.price, currency);
+  openingElement.textContent = formatPrice(priceData.opening, currency);
+  highElement.textContent = formatPrice(priceData.high, currency);
+  lowElement.textContent = formatPrice(priceData.low, currency);
 
   const percentage = calculatePercentage(priceData.price, priceData.opening);
   percentageElement.textContent = `${percentage}%`;
 
-  if (percentage >= 0) {
-    iconUpElement.style.visibility = 'visible';
-    iconDownElement.style.visibility = 'hidden';
-    percentageElement.style.color = config.green_badge_color;
-  } else {
-    iconUpElement.style.visibility = 'hidden';
-    iconDownElement.style.visibility = 'visible';
-    percentageElement.style.color = config.red_badge_color;
-  }
+  iconUpElement.style.visibility = percentage >= 0 ? 'visible' : 'hidden';
+  iconDownElement.style.visibility = percentage < 0 ? 'visible' : 'hidden';
+  percentageElement.style.color = percentage >= 0 ? config[currency].green_badge_color : config[currency].red_badge_color;
 };
 
 // Function to format the price to the desired currency display
-const formatPrice = (price) => {
-  return config.symbol_prefix ? `${config.symbol}${price.toFixed(2)}` : `${price.toFixed(2)}${config.symbol}`;
+const formatPrice = (price, currency) => {
+  const symbol = config[currency].symbol;
+  return config[currency].symbol_prefix ? `${symbol}${price.toFixed(2)}` : `${price.toFixed(2)}${symbol}`;
 };
 
 // Function to calculate the percentage difference between two prices
@@ -65,48 +95,36 @@ const calculatePercentage = (currentPrice, openingPrice) => {
   return (((currentPrice - openingPrice) / openingPrice) * 100).toFixed(2);
 };
 
-// Initializes the currency switcher on the popup
-const initCurrencySwitcher = () => {
-  document.querySelectorAll('input[name="currency"]').forEach((input) => {
-    input.addEventListener('change', (event) => {
-      config.currency = event.target.value;
-      requestData(); // Request new data when currency changes
-    });
-  });
-};
-
-// Load settings from local storage into the form
-const loadSettings = () => {
-  chrome.storage.local.get(['high_notification', 'low_notification'], function(result) {
-    if (result.high_notification) {
-      document.getElementById('high-notification').value = result.high_notification;
-    }
-    if (result.low_notification) {
-      document.getElementById('low-notification').value = result.low_notification;
-    }
-  });
-};
-
-// Save settings from the form into local storage
-const saveSettings = () => {
-  const highVal = document.getElementById('high-notification').value;
-  const lowVal = document.getElementById('low-notification').value;
-  chrome.storage.local.set({
-    'high_notification': highVal,
-    'low_notification': lowVal
-  }, function() {
-    // Notify the user that the settings were saved
-    alert('Settings saved');
-    // Send a message to the background script to reset the alert counter
-    chrome.runtime.sendMessage("resetAlertCounter");
-    // Re-fetch prices with potentially new settings
-    requestData();
-  });
-};
-// Event listeners for DOM content load
+// Load settings from local storage into the form and attach event listeners
 document.addEventListener('DOMContentLoaded', function () {
-  initCurrencySwitcher();
-  requestData();
-  loadSettings();
-  document.getElementById('save-button').addEventListener('click', saveSettings);
+  chrome.runtime.sendMessage("resetAlertCounter");  // Send message to reset alert counter on popup open
+  ['ETH', 'BTC', 'DOGE', 'SOL'].forEach(currency => {
+    loadSettings(currency);
+    const saveButton = document.querySelector(`.${currency.toLowerCase()} .save-button`);
+    saveButton.addEventListener('click', () => saveSettings(currency));
+  });
+  requestData();  // Fetch data on load
 });
+
+// Load settings for specified currency
+const loadSettings = (currency) => {
+  chrome.storage.local.get([`${currency.toLowerCase()}_high_notification`, `${currency.toLowerCase()}_low_notification`], function(result) {
+    document.getElementById(`${currency.toLowerCase()}-high-notification`).value = result[`${currency.toLowerCase()}_high_notification`] || '';
+    document.getElementById(`${currency.toLowerCase()}-low-notification`).value = result[`${currency.toLowerCase()}_low_notification`] || '';
+  });
+};
+
+// Save settings for specified currency
+const saveSettings = (currency) => {
+  const highVal = document.getElementById(`${currency.toLowerCase()}-high-notification`).value;
+  const lowVal = document.getElementById(`${currency.toLowerCase()}-low-notification`).value;
+  let settings = {};
+  settings[`${currency.toLowerCase()}_high_notification`] = highVal;
+  settings[`${currency.toLowerCase()}_low_notification`] = lowVal;
+
+  chrome.storage.local.set(settings, function() {
+    alert(`${currency} settings saved`);
+    requestData();  // Re-fetch prices with potentially new settings
+  });
+};
+

@@ -1,158 +1,156 @@
 body {
   font-family: 'Ubuntu', sans-serif;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: stretch;
   background-color: #FFF;
-  color: #212121;
-  border: 2px solid #212121;
-  margin: 12px;
-  width: 500px;
-  height: auto;
+  width: 800px;
+  margin: 0 auto;
+  padding: 5px;
+  height: 90vh;
+  overflow: auto;
 }
 
 .container {
-  margin: 44px 44px 16px;
+  flex: 0 0 22%;
+  width: calc(25% - 11px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: #f9f9f9;
+  color: #212121;
+  margin: 10px 0.5%;
+  padding: 20px 25px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  box-sizing: border-box;
+  min-height: 250px;
 }
 
 .title {
-  font-size: 30px;
-  font-weight: normal;
+  font-size: 20px;
+  color: #333;
 }
 
 .subtitle {
-  margin-top: -16px;
-  font-size: 10px;
-  font-weight: normal;
+  font-size: 12px;
+  color: #666;
 }
 
 .price-container {
-  padding-top: 2px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.price-title-container, .price-icons-container {
+  display: inline-block;
+  vertical-align: middle;
 }
 
 .price {
-  font-size: 40px;
+  font-size: 32px;
   font-weight: bold;
+  color: #333;
 }
 
 .percentage {
-  font-size: 20px;
-  font-weight: normal;
+  display: inline-block;
+  font-size: 16px;
+  font-weight: 600;
+  margin-right: 8px;
 }
 
-.row {
-  display: flex;
-}
-
-.price-icons-container {
-  flex: 1;
-  padding-top: 21px;
-  padding-left: 10px;
-}
-
-.icon-up {
-  display: block;
-  visibility: hidden;
-}
-
-.icon-down {
-  display: block;
-  visibility: hidden;
+.icon-up, .icon-down {
+  display: inline;
+  width: 14px;
+  height: 14px;
+  margin-left: 4px;
+  vertical-align: middle;
 }
 
 .extra-info {
-  font-size: 13px;
-  width: 100%;
-  position: relative;
-  display: inline-block;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  font-size: 14px;
+  margin-top: 10px;
+  text-align: left;
 }
 
-.extra-info span {
-  padding-left: 3px;
+.extra-info p {
+  margin: 2px 0;
+  font-weight: normal;
 }
-
-.extra-info-left {
-  float: left;
-  width: 33%;
-}
-
-.extra-info-center {
-  float: center;
-  width: 33%;
-  text-align: right;
-}
-
-.extra-info-right {
-  float: right;
-  width: 33%;
-  text-align: right;
-}
-
-.options-container {
-  width: 100%;
-  position: relative;
-  display: inline-block;
-}
-
 
 .settings-container {
-  width:100%;
-  marign-top:10px;
+  margin-top: 30px;
+}
+
+.settings-container label {
+  text-transform: capitalize;
+  display: block;
+  margin-bottom: 8px;
 }
 
 .settings-container h1 {
-  font-size: 20px;
-  font-weight: bold;
-  margin-bottom: 15px;
+  font-size: 16px;
+  margin-bottom: 16px;
 }
 
 input[type="number"] {
-  width: 100%;
-  height: 30px;
-  padding: 5px;
-  margin-bottom: 15px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  width: calc(100% - 10px);
+  padding: 10px;
+  margin-top: 4px;
+  margin-bottom: 16px;
   box-sizing: border-box;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+input[type="number"]::placeholder {
+  opacity: 0.7;
+  font-style: italic;
+}
+
+input[type="number"]:focus {
+  border: 2px solid #4CAF50;
+  outline: none;
 }
 
 button[type="button"] {
   background-color: #4CAF50;
   color: white;
-  padding: 10px 20px;
+  font-size: 14px;
+  padding: 10px 18px;
   border: none;
-  border-radius: 4px;
   cursor: pointer;
-  font-size: 16px;
+  transition: background-color 0.3s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 20px auto 0 auto;
+  display: block;
 }
 
 button[type="button"]:hover {
-  background-color: #45a049;
+  background-color: #367c2b;
 }
 
-.input-container {
-  width: 138px;
-  height: 26px;
-  float: left;
-  text-align: center;
-  background-color: #FFF;
-}
+@media (max-width: 600px) {
+  .container {
+    flex-basis: 100%;
+  }
 
-input[type="radio"] {
-  display: none;
-}
+  .title, .percentage, .price {
+    font-size: 18px;
+  }
 
-label {
-  padding-top: 10px;
-  width: 100%;
-  height: 100%;
-  font-size: 13px;
-  display: block;
-  border-top: 2px solid #212121;
-}
-
-.border {
-  border-right: 2px solid #212121;
-}
-
-input[type="radio"]:checked + label {
-  background-color: #000;
-  color: #FFF;
+  .extra-info p {
+    font-size: 12px;
+  }
 }

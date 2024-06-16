@@ -6,8 +6,8 @@
   <script type="text/javascript" src="../../js/jquery-3.1.1.slim.min.js"></script>
 </head>
 <body>
-<div class="container">
-  <h1 class="title">ETH price</h1>
+<div class="container eth">
+  <h1 class="title">ETH Price</h1>
   <h4 class="subtitle">(@ Kraken)</h4>
   <div class="price-container">
     <div class="row">
@@ -27,29 +27,165 @@
   </div>
 
   <div class="extra-info">
-    <p class="extra-info extra-info-left">
+    <p class="extra-info-left">
       Opening: <span class="opening">-</span>
     </p>
-    <p class="extra-info extra-info-center">
+    <p class="extra-info-center">
       High: <span class="high">-</span>
     </p>
-    <p class="extra-info extra-info-right">
+    <p class="extra-info-right">
       Low: <span class="low">-</span>
     </p>
   </div>
   <div class="settings-container">
     <h1>Additional Settings</h1>
-    <form id="settings-form">
-      <label for="high-notification">High Notification Threshold (ETH):</label>
-      <input type="number" id="high-notification" min="0" step="any" placeholder="Enter high threshold">
+    <form id="eth-settings-form">
+      <label for="eth-high-notification">High Notification Threshold (ETH):</label>
+      <input type="number" id="eth-high-notification" min="0" step="any" placeholder="Enter high threshold">
 
-      <label for="low-notification">Low Notification Threshold (ETH):</label>
-      <input type="number" id="low-notification" min="0" step="any" placeholder="Enter low threshold">
+      <label for="eth-low-notification">Low Notification Threshold (ETH):</label>
+      <input type="number" id="eth-low-notification" min="0" step="any" placeholder="Enter low threshold">
 
-      <button type="button" id="save-button">Save Settings</button>
+      <button type="button" class="save-button">Save Settings</button>
     </form>
   </div>
 </div>
+
+<div class="container btc">
+  <h1 class="title">BTC Price</h1>
+  <h4 class="subtitle">(@ Kraken)</h4>
+  <div class="price-container">
+    <div class="row">
+      <div class="price-title-container">
+        <h2>
+          <span class="price">-</span>
+        </h2>
+      </div>
+      <div class="price-icons-container">
+        <img class="icon-up" src="../../icons/up.png" width="17" height="17" />
+        <img class="icon-down" src="../../icons/down.png" width="17" height="17" />
+      </div>
+    </div>
+    <h3>
+      <span class="percentage">-%</span>
+    </h3>
+  </div>
+
+  <div class="extra-info">
+    <p class="extra-info-left">
+      Opening: <span class="opening">-</span>
+    </p>
+    <p class="extra-info-center">
+      High: <span class="high">-</span>
+    </p>
+    <p class="extra-info-right">
+      Low: <span class="low">-</span>
+    </p>
+  </div>
+  <div class="settings-container">
+    <h1>Additional Settings</h1>
+    <form id="btc-settings-form">
+      <label for="btc-high-notification">High Notification Threshold (BTC):</label>
+      <input type="number" id="btc-high-notification" min="0" step="any" placeholder="Enter high threshold">
+
+      <label for="btc-low-notification">Low Notification Threshold (BTC):</label>
+      <input type="number" id="btc-low-notification" min="0" step="any" placeholder="Enter low threshold">
+
+      <button type="button" class="save-button">Save Settings</button>
+    </form>
+  </div>
+</div>
+
+<div class="container doge">
+  <h1 class="title">DOGE Price</h1>
+  <h4 class="subtitle">(@ Kraken)</h4>
+  <div class="price-container">
+    <div class="row">
+      <div class="price-title-container">
+        <h2>
+          <span class="price">-</span>
+        </h2>
+      </div>
+      <div class="price-icons-container">
+        <img class="icon-up" src="../../icons/up.png" width="17" height="17" />
+        <img class="icon-down" src="../../icons/down.png" width="17" height="17" />
+      </div>
+    </div>
+    <h3>
+      <span class="percentage">-%</span>
+    </h3>
+  </div>
+
+  <div class="extra-info">
+    <p class="extra-info-left">
+      Opening: <span class="opening">-</span>
+    </p>
+    <p class="extra-info-center">
+      High: <span class="high">-</span>
+    </p>
+    <p class="extra-info-right">
+      Low: <span class="low">-</span>
+    </p>
+  </div>
+  <div class="settings-container">
+    <h1>Additional Settings</h1>
+    <form id="doge-settings-form">
+      <label for="doge-high-notification">High Notification Threshold (DOGE):</label>
+      <input type="number" id="doge-high-notification" min="0" step="any" placeholder="Enter high threshold">
+
+      <label for="doge-low-notification">Low Notification Threshold (DOGE):</label>
+      <input type="number" id="doge-low-notification" min="0" step="any" placeholder="Enter low threshold">
+
+      <button type="button" class="save-button">Save Settings</button>
+    </form>
+  </div>
+</div>
+
+<div class="container sol">
+  <h1 class="title">SOL Price</h1>
+  <h4 class="subtitle">(@ Kraken)</h4>
+  <div class="price-container">
+    <div class="row">
+      <div class="price-title-container">
+        <h2>
+          <span class="price">-</span>
+        </h2>
+      </div>
+      <div class="price-icons-container">
+        <img class="icon-up" src="../../icons/up.png" width="17" height="17" />
+        <img class="icon-down" src="../../icons/down.png" width="17" height="17" />
+      </div>
+    </div>
+    <h3>
+      <span class="percentage">-%</span>
+    </h3>
+  </div>
+
+  <div class="extra-info">
+    <p class="extra-info-left">
+      Opening: <span class="opening">-</span>
+    </p>
+    <p class="extra-info-center">
+      High: <span class="high">-</span>
+    </p>
+    <p class="extra-info-right">
+      Low: <span class="low">-</span>
+    </p>
+  </div>
+  <div class="settings-container">
+    <h1>Additional Settings</h1>
+    <form id="sol-settings-form">
+      <label for="sol-high-notification">High Notification Threshold (SOL):</label>
+      <input type="number" id="sol-high-notification" min="0" step="any" placeholder="Enter high threshold">
+
+      <label for="sol-low-notification">Low Notification Threshold (SOL):</label>
+      <input type="number" id="sol-low-notification" min="0" step="any" placeholder="Enter low threshold">
+
+      <button type="button" class="save-button">Save Settings</button>
+    </form>
+  </div>
+</div>
+
 <script type="text/javascript" src="browser_action.js"></script>
 </body>
 </html>
