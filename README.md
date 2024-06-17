@@ -71,4 +71,4 @@ Contributions to this project are welcome. Please adhere to the following steps:
 
 Thanks for reading! If you like our content, please consider following us!
 
-[Twitter/X](https://twitter.com/gbtilabs) | [GitHub](https://github.com/gbti-labs) | [YouTube](https://www.youtube.com/channel/UCh4FjB6r4oWQW-QFiwqv-UA) | [Dev.to](https://dev.to/gbti) | [Daily.dev](https://dly.to/zfCriM6JfRF) | [Hashnode](https://gbti.hashnode.dev/) | [Discord](https://gbti.io)
+[Twitter/X](https://twitter.com/gbti_network) | [GitHub](https://github.com/gbti-labs) | [YouTube](https://www.youtube.com/channel/UCh4FjB6r4oWQW-QFiwqv-UA) | [Dev.to](https://dev.to/gbti) | [Daily.dev](https://dly.to/zfCriM6JfRF) | [Hashnode](https://gbti.hashnode.dev/) | [Discord](https://gbti.io)
